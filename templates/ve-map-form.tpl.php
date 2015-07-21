@@ -5,7 +5,7 @@
         <li class="first uncomplete">
           <span class="highlight">Load data</span>
         </li>
-        <li class="uncomplete">
+        <li class="last uncomplete">
           <span class="highlight">Map settings</span>
         </li>
       </ol>

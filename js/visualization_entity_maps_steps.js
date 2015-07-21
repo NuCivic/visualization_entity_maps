@@ -50,7 +50,6 @@ this.recline.View = this.recline.View || {};
       state.get('model').fetch().done(function(){
         cb(state);
       });
-      console.log(state);
     }
   });
 
@@ -59,34 +58,34 @@ this.recline.View = this.recline.View || {};
   */
   global.MapSettingsView = Backbone.View.extend({
     template: '<div class="form-group">' +
-    '<p><input type="radio" id="type-geopoint" name="control-map-type" value="geopoint" checked>' +
+    '<p><input type="radio" id="type-geopoint" name="control-map-type" value="geopoint" {{#sourceGeopoint}}checked{{/sourceGeopoint}}>' +
     '<label for="type-geopoint">Geo Point field</label></p>' +
-    '<p><input type="radio" id="type-latlon" name="control-map-type" value="latlon">' +
+    '<p><input type="radio" id="type-latlon" name="control-map-type" value="latlon" {{#sourceLatlon}}checked{{/sourceLatlon}}>' +
     '<label for="type-geopoint">Latitude and Longitude fields</label></p></div>' +
-    '<div class="form-group form-group-latlon form-group-hidden">' +
-    '<label for="control-map-lonfield">Longitude Field</label>' +
-    '<select id="control-map-lonfield" class="form-control">' +
-    '{{#fields}}' +
-    '<option value="{{value}}" {{#lonSelected}}selected{{/lonSelected}}>{{name}}</option>' +
-    '{{/fields}}' +
-    '</select>' +
+    '<div class="form-group form-group-latlon {{#sourceGeopoint}}form-group-hidden{{/sourceGeopoint}}">' +
     '<label for="control-map-latfield">Latitude Field</label>' +
     '<select id="control-map-latfield" class="form-control">' +
     '{{#fields}}' +
     '<option value="{{value}}" {{#latSelected}}selected{{/latSelected}}>{{name}}</option>' +
     '{{/fields}}' +
     '</select>' +
+    '<label for="control-map-lonfield">Longitude Field</label>' +
+    '<select id="control-map-lonfield" class="form-control">' +
+    '{{#fields}}' +
+    '<option value="{{value}}" {{#lonSelected}}selected{{/lonSelected}}>{{name}}</option>' +
+    '{{/fields}}' +
+    '</select>' +
     '</div>' +
-    '<div class="form-group form-group-geopoint">' +
+    '<div class="form-group form-group-geopoint {{#sourceLatlon}}form-group-hidden{{/sourceLatlon}}"">' +
     '<label for="control-map-geopoint">Geopoint Field</label>' +
     '<select id="control-map-geopoint" class="form-control">' +
     '{{#fields}}' +
-    '<option value="{{value}}" {{#geoSelected}}selected{{/geoSelected}}>{{name}}</option>' +
+    '<option value="{{value}}" {{#geomSelected}}selected{{/geomSelected}}>{{name}}</option>' +
     '{{/fields}}' +
     '</select>' +
     '</div>' +
     '<div class="form-group">' +
-    '<input type="checkbox" id="control-map-cluster" value="1">' +
+    '<input type="checkbox" id="control-map-cluster" value="1" {{#clusterEnabled}}checked{{/clusterEnabled}}>' +
     '<label for="control-map-cluster">Enable clustering</label>' +
     '</div>' +
     '<div id="controls">' +
@@ -130,9 +129,14 @@ this.recline.View = this.recline.View || {};
             name: field.id,
             latSelected: field.id === latSelected,
             lonSelected: field.id === lonSelected,
+            geomSelected: field.id === geomSelected,
           });
         });
       self.state.set('fields', fields);
+
+      self.state.set('clusterEnabled', cluster);
+      self.state.set('sourceGeopoint', geomSelected || !mapConfig);
+      self.state.set('sourceLatlon', !geomSelected && mapConfig);
 
       self.$el.html(Mustache.render(self.template, self.state.toJSON()));
     },
@@ -141,7 +145,12 @@ this.recline.View = this.recline.View || {};
       var geomField = null;
       var lonField = null;
       var latField = null;
-      var sourceType = self.$('[name="control-map-type"]').val();
+      var sourceType = null;
+      if(self.$('#type-geopoint').prop('checked')) {
+        sourceType = self.$('#type-geopoint').val();
+      } else if(self.$('#type-latlon').prop('checked')) {
+        sourceType = self.$('#type-latlon').val();
+      }
       var cluster = self.$('#control-map-cluster').prop('checked');
       if (sourceType == 'geopoint') {
         geomField = self.$('#control-map-geopoint').val();

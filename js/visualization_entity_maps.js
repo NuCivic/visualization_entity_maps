@@ -16,7 +16,6 @@
       if(currentState && !sharedObject) {
         state = new recline.Model.ObjectState(JSON.parse(currentState));
         model = state.get('model');
-        console.log(state);
 
         if(model && !model.records) {
           // Ensure url is protocol agnostic
@@ -46,6 +45,12 @@
         sharedObject = {state: state};
 
         init();
+      }
+
+      if(state) {
+        setActiveStep(state.get('step'));
+      } else {
+        setActiveStep(0);
       }
 
       function cleanURL(url) {
