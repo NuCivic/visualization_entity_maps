@@ -60,7 +60,7 @@ this.recline.View = this.recline.View || {};
     template: '<div class="form-group">' +
     '<p><input type="radio" id="type-geopoint" name="control-map-type" value="geopoint" {{#sourceGeopoint}}checked{{/sourceGeopoint}}>' +
     '<label for="type-geopoint">Geo Point field</label></p>' +
-    '<p><input type="radio" id="type-latlon" name="control-map-type" value="latlon" {{#sourceLatlon}}checked{{/sourceLatlon}}>' +
+    '<p><input type="radio" id="type-latlon" name="control-map-type" value="latlon" {{^sourceGeopoint}}checked{{/sourceGeopoint}}>' +
     '<label for="type-geopoint">Latitude and Longitude fields</label></p></div>' +
     '<div class="form-group form-group-latlon {{#sourceGeopoint}}form-group-hidden{{/sourceGeopoint}}">' +
     '<label for="control-map-latfield">Latitude Field</label>' +
@@ -76,7 +76,7 @@ this.recline.View = this.recline.View || {};
     '{{/fields}}' +
     '</select>' +
     '</div>' +
-    '<div class="form-group form-group-geopoint {{#sourceLatlon}}form-group-hidden{{/sourceLatlon}}"">' +
+    '<div class="form-group form-group-geopoint {{^sourceGeopoint}}form-group-hidden{{/sourceGeopoint}}"">' +
     '<label for="control-map-geopoint">Geopoint Field</label>' +
     '<select id="control-map-geopoint" class="form-control">' +
     '{{#fields}}' +
@@ -85,7 +85,7 @@ this.recline.View = this.recline.View || {};
     '</select>' +
     '</div>' +
     '<div class="form-group">' +
-    '<input type="checkbox" id="control-map-cluster" value="1" {{#clusterEnabled}}checked{{/clusterEnabled}}>' +
+    '<input type="checkbox" id="control-map-cluster" value="1" {{#cluster}}checked{{/cluster}}>' +
     '<label for="control-map-cluster">Enable clustering</label>' +
     '</div>' +
     '<div id="controls">' +
@@ -108,16 +108,15 @@ this.recline.View = this.recline.View || {};
     render: function() {
       var self = this;
 
-      var geomSelected;
-      var latSelected;
-      var lonSelected;
-      var cluster;
-      var mapConfig = self.state.get('mapConfig');
-      if (mapConfig) {
-        latSelected = mapConfig.latField;
-        lonSelected = mapConfig.lonField;
-        geomSelected = mapConfig.geomField;
-        cluster = mapConfig.state.cluster;
+      var mapForm = {
+        geomField: null,
+        latField: null,
+        lonField: null,
+        cluster: false,
+      }
+      var mapState = self.state.get('mapState');
+      if (mapState) {
+        mapForm = _.extend(mapForm, mapState);
       }
 
       var fields = new Array();
@@ -127,46 +126,39 @@ this.recline.View = this.recline.View || {};
           fields.push({
             value: field.id,
             name: field.id,
-            latSelected: field.id === latSelected,
-            lonSelected: field.id === lonSelected,
-            geomSelected: field.id === geomSelected,
+            latSelected: field.id === mapForm.latField,
+            lonSelected: field.id === mapForm.lonField,
+            geomSelected: field.id === mapForm.geomField,
           });
         });
-      self.state.set('fields', fields);
+      mapForm.fields = fields;
+      mapForm.sourceGeopoint = mapForm.geomField || !mapState;
 
-      self.state.set('clusterEnabled', cluster);
-      self.state.set('sourceGeopoint', geomSelected || !mapConfig);
-      self.state.set('sourceLatlon', !geomSelected && mapConfig);
-
-      self.$el.html(Mustache.render(self.template, self.state.toJSON()));
+      self.$el.html(Mustache.render(self.template, mapForm));
     },
     updateState: function(state, cb) {
       var self = this;
-      var geomField = null;
-      var lonField = null;
-      var latField = null;
+      var mapState = {
+        lonField: null,
+        latField: null,
+        geomField: null,
+        cluster: null,
+      };
       var sourceType = null;
       if(self.$('#type-geopoint').prop('checked')) {
         sourceType = self.$('#type-geopoint').val();
       } else if(self.$('#type-latlon').prop('checked')) {
         sourceType = self.$('#type-latlon').val();
       }
-      var cluster = self.$('#control-map-cluster').prop('checked');
+      mapState.cluster = self.$('#control-map-cluster').prop('checked');
       if (sourceType == 'geopoint') {
-        geomField = self.$('#control-map-geopoint').val();
+        mapState.geomField = self.$('#control-map-geopoint').val();
       } else if (sourceType == 'latlon') {
-        var lonField = self.$('#control-map-lonfield').val();
-        var latField = self.$('#control-map-latfield').val();
+        mapState.lonField = self.$('#control-map-lonfield').val();
+        mapState.latField = self.$('#control-map-latfield').val();
       }
-      var mapConfig = {
-        lonField: lonField,
-        latField: latField,
-        geomField: geomField,
-        state: {
-          cluster: cluster,
-        },
-      }
-      self.state.set('mapConfig', mapConfig);
+
+      state.set('mapState', mapState);
       $('#eck-entity-form-add-visualization-ve-map').submit();
     },
     toggleDepFields: function(e) {

@@ -11,26 +11,30 @@
         model.url = cleanURL(model.url);
         var dataset = new recline.Model.Dataset(model);
 
-        mapConfig = state.get('mapConfig');
-        mapConfig.model = dataset;
-        mapConfig.el = el;
+        mapState = state.get('mapState');
+
+        var mapConfig = {
+          model: dataset,
+          el: el,
+          state: mapState,
+        };
 
         dataset.fetch()
           .done(function(d) {
 
-            if (mapConfig.geomField) {
+            if (mapConfig.state.geomField) {
               d.fields.each(function(field) {
-                if (field.id === mapConfig.geomField) {
+                if (field.id === mapConfig.state.geomField) {
                   field.type = 'geo_point';
                 }
               });
 
               d.records.each(function(r) {
-                match = r.get(mapConfig.geomField).match(/\(-?[\d.]+?, -?[\d.]+?\)/);
+                match = r.get(mapConfig.state.geomField).match(/\(-?[\d.]+?, -?[\d.]+?\)/);
                 if (match) {
-                  r.set(mapConfig.geomField, match[0]);
+                  r.set(mapConfig.state.geomField, match[0]);
                 } else {
-                  r.set(mapConfig.geomField, '');
+                  r.set(mapConfig.state.geomField, '');
                 }
               });
             }
@@ -39,7 +43,6 @@
             map.render();
 
           });
-
       }
 
       function cleanURL(url) {

@@ -41,7 +41,6 @@
         }
       } else if (!sharedObject) {
         state = new recline.Model.ObjectState();
-        state.set('queryState', new recline.Model.Query({size: 20, from: 0}));
         sharedObject = {state: state};
 
         init();
