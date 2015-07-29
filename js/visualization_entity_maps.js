@@ -2,9 +2,9 @@
  * @file
  * Provides options for chart visualization.
  */
-
+var sharedObject;
 (function ($) {
-  var sharedObject;
+
 
   Drupal.behaviors.VisualizationEntityMaps = {
     attach: function(context) {
@@ -30,7 +30,7 @@
             .done(function() {
               model.fetch().done(init);
               state.set('model', model);
-              state.get('model').queryState.attributes = state.get('queryState');
+              state.get('model').queryState.attributes = state;
               sharedObject = {state: state};
             })
             .fail(function() {
@@ -102,6 +102,7 @@
           $sourceField.val(Drupal.settings.basePath + 'node/' + uuid + '/download');
         });
         sharedObject.state.on('change', function() {
+          console.log(sharedObject.state.toJSON());
           $('#edit-field-ve-map-settings-und-0-value').val(JSON.stringify(sharedObject.state.toJSON()));
         });
 

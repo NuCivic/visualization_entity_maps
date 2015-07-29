@@ -23,6 +23,10 @@ this.recline.View = this.recline.View || {};
     '<div id="controls">' +
     '<div id="next" class="btn btn-primary pull-right">Next</div>' +
     '</div>',
+    events: {
+      'change #control-map-source': 'changeSource',
+      'change #control-map-backend': 'changeBackend',
+    },
     initialize: function(options) {
       var self = this;
       self.options = _.defaults(options || {}, self.options);
@@ -36,6 +40,19 @@ this.recline.View = this.recline.View || {};
     render: function() {
       var self = this;
       self.$el.html(Mustache.render(self.template, self.state.toJSON()));
+    },
+    changeSource: function(){
+      this.updateField({fieldName: 'url', id: 'control-map-source'});
+    },
+    changeBackend: function(){
+      this.updateField({fieldName: 'backend', id: 'control-map-backend'});
+    },
+    updateField: function(options){
+      var self = this;
+      var source = {};
+      source[options.fieldName] = self.$('#' + options.id).val();
+      self.state.set('source', _.extend(self.state.get('source') || {}, source));
+      self.state.trigger('change');
     },
     updateState: function(state, cb) {
       var self = this;
@@ -90,10 +107,15 @@ this.recline.View = this.recline.View || {};
     '</div>' +
     '<div id="controls">' +
     '<div id="prev" class="btn btn-default pull-left">Back</div>' +
-    '<button id="next" class="btn btn-success pull-right">Finish</button>' +
+    '<button type="submit" class="form-submit btn btn-success pull-right">Finish</button>' +
     '</div>',
     events: {
       'change [name="control-map-type"]': 'toggleDepFields',
+      'change #control-map-latfield': 'changeLatitude',
+      'change #control-map-lonfield': 'changeLongitude',
+      'change #control-map-geopoint': 'changeGeopoint',
+      'change #control-map-cluster': 'changeCluster',
+      'change #control-map-type': 'changeMapType',
     },
     initialize: function(options) {
       var self = this;
@@ -104,6 +126,29 @@ this.recline.View = this.recline.View || {};
         title: 'Map Settings',
         name: 'mapSettings'
       };
+    },
+    changeLongitude: function(){
+      this.updateField({fieldName: 'lonField', id: 'control-map-lonfield'});
+    },
+    changeLatitude: function(){
+      this.updateField({fieldName: 'latField', id: 'control-map-latfield'});
+    },
+    changeGeopoint: function(){
+      this.updateField({fieldName: 'geomField', id: 'control-map-geopoint'});
+    },
+    changeCluster: function(){
+      var self = this;
+      var mapState = {};
+      mapState.cluster = self.$('#control-map-cluster').prop('checked');
+      self.state.set('mapState', _.extend(self.state.get('mapState') || {}, mapState));
+      self.state.trigger('change');
+    },
+    updateField: function(options){
+      var self = this;
+      var mapState = {};
+      mapState[options.fieldName] = self.$('#' + options.id).val();
+      self.state.set('mapState', _.extend(self.state.get('mapState') || {}, mapState));
+      self.state.trigger('change');
     },
     render: function() {
       var self = this;
@@ -119,7 +164,7 @@ this.recline.View = this.recline.View || {};
         mapForm = _.extend(mapForm, mapState);
       }
 
-      var fields = new Array();
+      var fields = [];
       self.state.get('model')
         .fields
         .each(function(field) {
@@ -157,11 +202,17 @@ this.recline.View = this.recline.View || {};
         mapState.lonField = self.$('#control-map-lonfield').val();
         mapState.latField = self.$('#control-map-latfield').val();
       }
-
       state.set('mapState', mapState);
+      cb(state);
       $('#eck-entity-form-add-visualization-ve-map').submit();
     },
     toggleDepFields: function(e) {
+
+      var self = this;
+      var mapState = {};
+      mapState.type = e.target.value;
+      self.state.set('mapState', _.extend(self.state.get('mapState') || {}, mapState));
+      self.state.trigger('change');
       if (e.target.value == 'geopoint') {
         $('.form-group-latlon').addClass('form-group-hidden');
         $('.form-group-geopoint').removeClass('form-group-hidden');
