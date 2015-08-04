@@ -5,6 +5,9 @@
       var state = $('.field-name-field-ve-map-settings .field-item:eq(0)').text();
       var el = $('#map');
 
+      // Needed when Leaflet is uglified
+      L.Icon.Default.imagePath = Drupal.settings.visualizationEntityMaps.leafletPath + '/dist/images';
+
       if (state) {
         state = new recline.Model.ObjectState(JSON.parse(state));
         var model = state.get('source');

@@ -54,6 +54,7 @@ function visualization_entity_maps_entity_view($entity, $type, $view_mode, $lang
     visualization_entity_maps_attach_libraries($entity->content);
     $entity->content['#attached']['css'][] = drupal_get_path('module', 'visualization_entity_maps') . '/css/ve_map.css';
     drupal_add_js(drupal_get_path('module', 'visualization_entity_maps') . '/js/visualization_entity_maps_view.js', array('weight' => 101));
+    drupal_add_js(array('visualizationEntityMaps' => array('leafletPath' => libraries_get_path('leaflet', TRUE))), 'setting');
   }
 }
 
