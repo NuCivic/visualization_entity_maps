@@ -5,7 +5,9 @@
 #ve-map-form .pane-content{
   overflow: auto;
 }
-
+#ve-map-form .stages {
+	margin-top: 0;
+}
 #ve-map-form .stages li {
   width: 50%;
 }
@@ -17,4 +19,24 @@
 
 #ve-map-form .form-group-hidden {
   display: none;
+}
+#iframe-shell h2 {
+  display: none;
+}
+h2.veTitle {
+  font-size: 18px;
+  margin-top: 0px;
+  padding: 20px;
+  margin-bottom:0px;
+}
+#iframe-shell .region-content {
+  margin: 0px;
+}
+
+.page-visualization-ve-map .visualization-ve-map h1 {
+  display: none;
+}
+
+.recline-map .leaflet-container {
+  margin-bottom: 0px;
 }

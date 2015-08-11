@@ -105,6 +105,10 @@ this.recline.View = this.recline.View || {};
     '<input type="checkbox" id="control-map-cluster" value="1" {{#cluster}}checked{{/cluster}}>' +
     '<label for="control-map-cluster">Enable clustering</label>' +
     '</div>' +
+    '<div class="form-group">' +
+    '<input type="checkbox" id="control-map-show-title" value="1" {{#showTitle}}checked{{/showTitle}}>' +
+    '<label for="control-map-show-title">Show title</label>' +
+    '</div>' +
     '<div id="controls">' +
     '<div id="prev" class="btn btn-default pull-left">Back</div>' +
     '<button type="submit" class="form-submit btn btn-success pull-right">Finish</button>' +
@@ -115,6 +119,7 @@ this.recline.View = this.recline.View || {};
       'change #control-map-lonfield': 'changeLongitude',
       'change #control-map-geopoint': 'changeGeopoint',
       'change #control-map-cluster': 'changeCluster',
+      'change #control-map-show-title': 'changeTitle',
       'change #control-map-type': 'changeMapType',
     },
     initialize: function(options) {
@@ -143,6 +148,13 @@ this.recline.View = this.recline.View || {};
       self.state.set('mapState', _.extend(self.state.get('mapState') || {}, mapState));
       self.state.trigger('change');
     },
+    changeTitle: function(){
+      var self = this;
+      var mapState = {};
+      mapState.showTitle = self.$('#control-map-show-title').prop('checked');
+      self.state.set('mapState', _.extend(self.state.get('mapState') || {}, mapState));
+      self.state.trigger('change');
+    },
     updateField: function(options){
       var self = this;
       var mapState = {};
@@ -158,6 +170,7 @@ this.recline.View = this.recline.View || {};
         latField: null,
         lonField: null,
         cluster: false,
+        showTitle: true,
       }
       var mapState = self.state.get('mapState');
       if (mapState) {
@@ -188,6 +201,7 @@ this.recline.View = this.recline.View || {};
         latField: null,
         geomField: null,
         cluster: null,
+        showTitle: null,
       };
       var sourceType = null;
       if(self.$('#type-geopoint').prop('checked')) {
@@ -196,6 +210,7 @@ this.recline.View = this.recline.View || {};
         sourceType = self.$('#type-latlon').val();
       }
       mapState.cluster = self.$('#control-map-cluster').prop('checked');
+      mapState.showTitle = self.$('#control-map-show-title').prop('checked');
       if (sourceType == 'geopoint') {
         mapState.geomField = self.$('#control-map-geopoint').val();
       } else if (sourceType == 'latlon') {
