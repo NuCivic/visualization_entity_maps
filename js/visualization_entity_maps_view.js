@@ -78,7 +78,6 @@
       function resize(){
         var $title = $body.find('h2.veTitle');
         var hasTitle = !!$title.length;
-        $title.css({marginTop:'0px', padding:'20px', marginBottom:'0px'});
         var height = getVisualizationHeight(hasTitle);
         $('.recline-nvd3').height(height);
         $('.recline-map .map').height(height);
