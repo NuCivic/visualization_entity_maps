@@ -1,3 +1,4 @@
+.entity-visualization h1,
 .field-name-field-ve-map-settings {
   display: none;
 }
@@ -5,9 +6,7 @@
 #ve-map-form .pane-content{
   overflow: auto;
 }
-#ve-map-form .stages {
-	margin-top: 0;
-}
+
 #ve-map-form .stages li {
   width: 50%;
 }
