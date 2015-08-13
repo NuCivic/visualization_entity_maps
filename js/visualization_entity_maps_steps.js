@@ -102,11 +102,11 @@ this.recline.View = this.recline.View || {};
     '</select>' +
     '</div>' +
     '<div class="form-group">' +
-    '<input type="checkbox" id="control-map-cluster" value="1" {{#cluster}}checked{{/cluster}}>' +
+    '<input type="checkbox" id="control-map-cluster" value="{{cluster}}" {{#cluster}}checked{{/cluster}}>' +
     '<label for="control-map-cluster">Enable clustering</label>' +
     '</div>' +
     '<div class="form-group">' +
-    '<input type="checkbox" id="control-map-show-title" value="1" {{#showTitle}}checked{{/showTitle}}>' +
+    '<input type="checkbox" id="control-map-show-title" value="{{showTitle}}" {{#showTitle}}checked{{/showTitle}}>' +
     '<label for="control-map-show-title">Show title</label>' +
     '</div>' +
     '<div id="controls">' +
@@ -170,7 +170,7 @@ this.recline.View = this.recline.View || {};
         latField: null,
         lonField: null,
         cluster: false,
-        showTitle: true,
+        showTitle: false,
       }
       var mapState = self.state.get('mapState');
       if (mapState) {
