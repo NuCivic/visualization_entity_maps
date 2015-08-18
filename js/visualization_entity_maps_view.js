@@ -5,6 +5,8 @@
       var state = $('.field-name-field-ve-map-settings .field-item:eq(0)').text();
       var el = $('#map');
 
+      el.append('<p class="ve-loading">Loading…</p>');
+
       // Needed when Leaflet is uglified
       L.Icon.Default.imagePath = Drupal.settings.visualizationEntityMaps.leafletPath + '/dist/images';
 
@@ -44,6 +46,8 @@
 
             var map = new recline.View.Map(mapConfig);
             map.render();
+
+            $('.ve-loading').remove();
 
           });
       }
