@@ -106,7 +106,7 @@ this.recline.View = this.recline.View || {};
     '<label for="control-map-cluster">Enable clustering</label>' +
     '</div>' +
     '<div class="form-group">' +
-    '<input type="checkbox" id="control-map-show-title" value="{{showTitle}}" {{#showTitle}}checked{{/showTitle}}>' +
+    '<input type="checkbox" id="control-map-show-title" value="1" {{#showTitle}}checked{{/showTitle}}>' +
     '<label for="control-map-show-title">Show title</label>' +
     '</div>' +
     '<div id="controls">' +
@@ -170,7 +170,7 @@ this.recline.View = this.recline.View || {};
         latField: null,
         lonField: null,
         cluster: false,
-        showTitle: false,
+        showTitle: true
       }
       var mapState = self.state.get('mapState');
       if (mapState) {
@@ -201,7 +201,7 @@ this.recline.View = this.recline.View || {};
         latField: null,
         geomField: null,
         cluster: null,
-        showTitle: null,
+        showTitle: true
       };
       var sourceType = null;
       if(self.$('#type-geopoint').prop('checked')) {

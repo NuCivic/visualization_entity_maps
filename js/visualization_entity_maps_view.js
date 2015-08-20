@@ -18,10 +18,13 @@
         $window = $(window);
         $body.removeClass('admin-menu');
 
+        var mapDefaults = { showTitle: true };
+        mapState = _.extend({}, mapDefaults, state.get('mapState'));
+
         if($('#iframe-shell').length){
           $el = $('#map');
 
-          if(state.get('mapState').showTitle){
+          if(mapState.showTitle){
             title = $('#iframe-shell').find('h2 a').html();
 
             $body.prepend('<h2 class="veTitle">' + title + '</h2>');
@@ -41,8 +44,6 @@
         var model = state.get('source');
         model.url = cleanURL(model.url);
         var dataset = new recline.Model.Dataset(model);
-
-        mapState = state.get('mapState');
 
         var mapConfig = {
           model: dataset,
