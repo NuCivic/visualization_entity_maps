@@ -39,3 +39,8 @@ h2.veTitle {
 .recline-map .leaflet-container {
   margin-bottom: 0px;
 }
+
+/* Throbber element */
+.ve-loading {
+  text-align: center;
+}
