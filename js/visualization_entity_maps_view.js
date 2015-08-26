@@ -9,7 +9,7 @@
       var height;
       var $body;
 
-      el.append('<p class="ve-loading">Loading…</p>');
+      el.append('<p id="ve-loading">Loading…</p>');
 
       // Needed when Leaflet is uglified
       L.Icon.Default.imagePath = Drupal.settings.visualizationEntityMaps.leafletPath + '/dist/images';
@@ -79,8 +79,8 @@
             var map = new recline.View.Map(mapConfig);
             map.render();
             setTimeout(resize, 0);
-            
-            $('.ve-loading').remove();
+
+            $('#ve-loading').remove();
           });
       }
       function resize(){

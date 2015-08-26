@@ -41,6 +41,7 @@ h2.veTitle {
 }
 
 /* Throbber element */
-.ve-loading {
+#ve-loading {
   text-align: center;
+  margin: 15px 0;
 }
