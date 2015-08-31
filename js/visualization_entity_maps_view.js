@@ -9,7 +9,7 @@
       var height;
       var $body;
 
-      el.append('<p id="ve-loading">Loading…</p>');
+      el.append('<div class="alert alert-info loader">Loading <span class="spin"></span></div>');
 
       // Needed when Leaflet is uglified
       L.Icon.Default.imagePath = Drupal.settings.visualizationEntityMaps.leafletPath + '/dist/images';
@@ -80,7 +80,7 @@
             map.render();
             setTimeout(resize, 0);
 
-            $('#ve-loading').remove();
+            $el.find('.loader').remove();
           });
       }
       function resize(){
