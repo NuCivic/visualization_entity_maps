@@ -56,8 +56,7 @@
         // Remove limitation of 100 rows. There is no 'unlimited' setting.
         dataset.queryState.attributes.size = 10000000;
 
-        dataset.fetch()
-          .done(function(d) {
+        dataset.fetch().done(function(d) {
 
             if (mapConfig.state.geomField) {
               d.fields.each(function(field) {
@@ -76,6 +75,17 @@
               });
             }
 
+            // Map records to show only the fields we want to show.
+            records = _.map(mapConfig.model.records.toJSON(), function(record){
+              if(_.isEmpty(mapConfig.state.tooltipField)) return replaceNull(record);
+              var fieldsToPick = mapConfig.state.tooltipField.concat([mapConfig.state.geomField]);
+              return replaceNull(_.pick(record, fieldsToPick));
+            });
+
+            mapConfig.model = new recline.Model.Dataset({
+              records: records
+            });
+
             var map = new recline.View.Map(mapConfig);
             map.render();
             setTimeout(resize, 0);
@@ -83,6 +93,16 @@
             $el.find('.loader').remove();
           });
       }
+
+      function replaceNull(record){
+        return _.mapValues(record, function(value){
+          if(value === null)
+            return '-' ;
+          else
+            return value;
+        });
+      }
+
       function resize(){
         var $title = $body.find('h2.veTitle');
         var hasTitle = !!$title.length;
