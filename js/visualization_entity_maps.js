@@ -28,12 +28,14 @@ var sharedObject;
           // we can't know if the request fails.
           $.get(state.get('model').url)
             .done(function() {
+              $('<div class="alert alert-info loader">Loading <span class="spin"></span></div>').insertAfter('#steps');
               model.fetch().done(init);
               state.set('model', model);
               state.get('model').queryState.attributes = state;
               sharedObject = {state: state};
             })
             .fail(function() {
+              $('.loader').empty().hide();
               sharedObject = {state: state};
               sharedObject.state.set({step:0});
               init();
@@ -69,6 +71,7 @@ var sharedObject;
       }
 
       function init() {
+        $('.loader').empty().hide();
         var msv = new MultiStageView({
           state: state,
           el: $('#steps')
