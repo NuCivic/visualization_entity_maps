@@ -64,7 +64,9 @@ this.recline.View = this.recline.View || {};
       };
       state.set('model', new recline.Model.Dataset(source));
       state.set('source', source);
+      $('<div class="alert alert-info loader">Loading <span class="spin"></span></div>').insertAfter('#steps');
       state.get('model').fetch().done(function(){
+        $('.loader').empty().hide();
         cb(state);
       });
     }

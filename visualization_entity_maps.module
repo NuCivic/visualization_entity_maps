@@ -41,6 +41,7 @@ function visualization_entity_maps_attach_libraries(&$element) {
 
   $module_path = drupal_get_path('module', 'visualization_entity_maps');
   $element['#attached']['css'][] = $module_path . '/css/ve_map.css';
+  $element['#attached']['css'][] = $module_path . '/css/ve_map_edit.css';
   drupal_add_js($module_path . '/js/visualization_entity_maps_steps.js', array('weight' => 100));
   drupal_add_js($module_path . '/js/visualization_entity_maps.js', array('weight' => 102));
 }
