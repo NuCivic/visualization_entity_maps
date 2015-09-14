@@ -22,7 +22,6 @@
 
         var mapDefaults = { showTitle: true };
         mapState = _.extend({}, mapDefaults, state.get('mapState'));
-
         if($('#iframe-shell').length){
           $el = $('#map');
 
@@ -55,9 +54,7 @@
 
         // Remove limitation of 100 rows. There is no 'unlimited' setting.
         dataset.queryState.attributes.size = 10000000;
-
         dataset.fetch().done(function(d) {
-
             if (mapConfig.state.geomField) {
               d.fields.each(function(field) {
                 if (field.id === mapConfig.state.geomField) {
@@ -66,9 +63,13 @@
               });
 
               d.records.each(function(r) {
-                match = r.get(mapConfig.state.geomField).match(/\(-?[\d.]+?, -?[\d.]+?\)/);
-                if (match) {
-                  r.set(mapConfig.state.geomField, match[0]);
+                if(r.get(mapConfig.state.geomField)) {
+                  match = r.get(mapConfig.state.geomField).match(/\(-?[\d.]+?, -?[\d.]+?\)/);
+                  if (match) {
+                    r.set(mapConfig.state.geomField, match[0]);
+                  } else {
+                    r.set(mapConfig.state.geomField, '');
+                  }
                 } else {
                   r.set(mapConfig.state.geomField, '');
                 }
@@ -76,15 +77,20 @@
             }
 
             // Map records to show only the fields we want to show.
-            records = _.map(mapConfig.model.records.toJSON(), function(record){
-              if(_.isEmpty(mapConfig.state.tooltipField)) return replaceNull(record);
+            var records = d.records.map(function(record){
+              if(_.isEmpty(mapConfig.state.tooltipField)) return replaceNull(record.toJSON());
               var fieldsToPick = mapConfig.state.tooltipField.concat([mapConfig.state.geomField]);
-              return replaceNull(_.pick(record, fieldsToPick));
+              return replaceNull(_.pick(record.toJSON(), fieldsToPick));
             });
 
             mapConfig.model = new recline.Model.Dataset({
               records: records
             });
+
+            // Because we change the model we need to override
+            // and fetch the records again.
+            mapConfig.model.queryState.attributes.size = 10000000;
+            mapConfig.model.fetch();
 
             var map = new recline.View.Map(mapConfig);
             map.render();

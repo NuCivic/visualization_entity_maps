@@ -105,7 +105,6 @@ var sharedObject;
           $sourceField.val(Drupal.settings.basePath + 'node/' + uuid + '/download');
         });
         sharedObject.state.on('change', function() {
-          //console.log(sharedObject.state.toJSON());
           $('#edit-field-ve-map-settings-und-0-value').val(JSON.stringify(sharedObject.state.toJSON()));
         });
 
