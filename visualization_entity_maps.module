@@ -104,3 +104,78 @@ function template_preprocess_eck__entity__form_edit_visualization_ve_map(&$vars)
   unset($vars['form']['actions']);
   unset($vars['form']['submit']);
 }
+
+/**
+ *  Implements hook_update_N().
+ */
+function visualization_entity_maps_update_7001() {
+
+  // If field_uuid_resource doesn't exists I have to create it.
+  if(!$field = field_info_instance('visualization', 'field_uuid_resource', 've_map')) {
+    $instance = array(
+      'bundle' => 've_map',
+      'default_value' => NULL,
+      'deleted' => 0,
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'uuidreference',
+          'settings' => array(
+            'link' => FALSE,
+          ),
+          'type' => 'uuidreference_label',
+          'weight' => 2,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'visualization',
+      'field_name' => 'field_uuid_resource',
+      'label' => 'Existing resource',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'uuidreference',
+        'settings' => array(
+          'autocomplete_path' => 'uuidreference/autocomplete',
+        ),
+        'type' => 'uuidreference_autocomplete',
+        'weight' => 2,
+      ),
+    );
+
+    field_create_instance($instance);
+  }
+
+  // If field_ve_map_uuid_resource exists then I copy the data and delete the old field.
+  if ($instance = field_info_instance('visualization', 'field_ve_map_uuid_resource', 've_map')) {
+    $query = new EntityFieldQuery();
+
+    $query->entityCondition('entity_type', 'visualization')
+      ->entityCondition('bundle', 've_map');
+
+    $result = $query->execute();
+
+    if (isset($result['visualization'])) {
+      $maps_ids = array_keys($result['visualization']);
+      $maps = entity_load('visualization', $maps_ids);
+    }
+
+    foreach ($maps as $map) {
+
+      // We move the value from one to another field.
+      $map->field_uuid_resource = $map->field_ve_map_uuid_resource;
+      $map->save();
+    }
+
+    field_delete_instance($instance);
+  }
+}
