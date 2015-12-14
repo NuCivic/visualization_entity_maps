@@ -62,12 +62,11 @@
           var geoPointRegex = /\(-?[\d.]+?, -?[\d.]+?\)/;
           var records;
  	  var excludeFields = []; //tooltip fields to explicitly exclude
-
-  	  // exclude lat/lon fields from tooltips if not explicity required
+  	  
+	  // exclude lat/lon fields from tooltips if not explicity required
 	  if (!_.contains(state.tooltipField, state.lonField)) excludeFields.push(state.lonField);
           if (!_.contains(state.tooltipField, state.latField)) excludeFields.push(state.latField);
-         
-	  // If we use the geomfield
+          if (!_.contains(state.tooltipField, state.geomField)) excludeFields.push(state.geomField); // If we use the geomfield
           if (state.geomField) {
             d.fields.each(function(field) {
               if (field.id === state.geomField) {
