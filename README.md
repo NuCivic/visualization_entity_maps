@@ -1,4 +1,4 @@
-# Visualization Entity Charts
+# Visualization Entity Maps
 
 This module provides embeddable maps based on Visualization Entity module.
 
